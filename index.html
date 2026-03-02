@@ -39,7 +39,7 @@
     }
 
     h1 {
-      margin-bottom: 30px;
+      margin-bottom: 25px;
       text-shadow: 0 0 10px #00ff00;
     }
 
@@ -61,14 +61,6 @@
       box-shadow: 0 0 40px #00ff00;
     }
 
-    .about {
-      margin-top: 40px;
-      max-width: 600px;
-      border: 1px solid #00ff00;
-      padding: 20px;
-      box-shadow: 0 0 10px #00ff00;
-    }
-
     input {
       padding: 12px;
       font-size: 1.1rem;
@@ -80,11 +72,19 @@
       text-align: center;
     }
 
-    .token-box {
+    .box {
       margin-top: 20px;
       padding: 15px;
       border: 1px solid #00ff00;
       min-width: 350px;
+      box-shadow: 0 0 10px #00ff00;
+    }
+
+    .about {
+      margin-top: 30px;
+      max-width: 600px;
+      border: 1px solid #00ff00;
+      padding: 20px;
       box-shadow: 0 0 10px #00ff00;
     }
   </style>
@@ -96,7 +96,7 @@
 <!-- PAGE 1 -->
 <div id="homePage" class="page active">
   <h1>WELCOME TO THE MATRIX</h1>
-  <button id="launchBtn">LAUNCH</button>
+  <button onclick="goToTokenPage()">LAUNCH</button>
 
   <div class="about">
     <h2>About Us</h2>
@@ -112,17 +112,32 @@
   <h1>TOKEN INTERFACE</h1>
 
   <input type="text" id="tokenInput" placeholder="Enter your token">
-
-  <!-- NEW ENTER BUTTON -->
   <button onclick="enterToken()">ENTER</button>
 
   <div>
-    <button onclick="requestUserInfo()">GENERATE TOKEN</button>
-    <button onclick="goBack()">BACK</button>
+    <button onclick="goToFormPage()">GENERATE TOKEN</button>
+    <button onclick="goBackHome()">BACK</button>
   </div>
 
-  <div class="token-box" id="outputBox">
+  <div class="box" id="tokenOutput">
     Awaiting input...
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div id="formPage" class="page">
+  <h1>MAKE HAY WHILE THE SUN SHINES</h1>
+
+  <input type="text" id="nameInput" placeholder="Enter your name">
+  <input type="email" id="emailInput" placeholder="Enter your email">
+
+  <div>
+    <button onclick="submitForm()">SUBMIT</button>
+    <button onclick="goBackToToken()">BACK</button>
+  </div>
+
+  <div class="box" id="formOutput">
+    Awaiting user details...
   </div>
 </div>
 
@@ -143,7 +158,7 @@
   }
 
   function drawMatrix() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillStyle = "rgba(0,0,0,0.05)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = "#00ff00";
@@ -162,42 +177,56 @@
 
   setInterval(drawMatrix, 35);
 
-  const homePage = document.getElementById("homePage");
-  const tokenPage = document.getElementById("tokenPage");
+  function goToTokenPage() {
+    showPage("tokenPage");
+  }
 
-  document.getElementById("launchBtn").addEventListener("click", () => {
-    homePage.classList.remove("active");
-    tokenPage.classList.add("active");
-  });
+  function goBackHome() {
+    showPage("homePage");
+  }
 
-  function goBack() {
-    tokenPage.classList.remove("active");
-    homePage.classList.add("active");
+  function goToFormPage() {
+    showPage("formPage");
+  }
+
+  function goBackToToken() {
+    showPage("tokenPage");
+  }
+
+  function showPage(pageId) {
+    document.querySelectorAll(".page").forEach(page => {
+      page.classList.remove("active");
+    });
+    document.getElementById(pageId).classList.add("active");
   }
 
   function enterToken() {
     const token = document.getElementById("tokenInput").value;
+    const output = document.getElementById("tokenOutput");
 
     if (!token) {
-      document.getElementById("outputBox").innerHTML = "No token entered.";
+      output.innerHTML = "No token entered.";
       return;
     }
 
-    document.getElementById("outputBox").innerHTML =
+    output.innerHTML =
       "Token Entered:<br><br>" +
       token + "<br><br>" +
       "Status: Verifying...";
   }
 
-  function requestUserInfo() {
-    const name = prompt("Enter your name:");
-    if (!name) return;
+  function submitForm() {
+    const name = document.getElementById("nameInput").value;
+    const email = document.getElementById("emailInput").value;
+    const output = document.getElementById("formOutput");
 
-    const email = prompt("Enter your email address:");
-    if (!email) return;
+    if (!name || !email) {
+      output.innerHTML = "Please enter both Name and Email.";
+      return;
+    }
 
-    document.getElementById("outputBox").innerHTML =
-      "ACCESS REQUESTED<br><br>" +
+    output.innerHTML =
+      "ACCESS REQUEST RECEIVED<br><br>" +
       "Name: " + name + "<br>" +
       "Email: " + email + "<br><br>" +
       "Status: Pending authorization...";
