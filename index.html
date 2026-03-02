@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Matrix Launch</title>
+  <title>Matrix Token Launcher</title>
   <style>
     * {
       margin: 0;
@@ -25,47 +25,68 @@
       z-index: -1;
     }
 
-    .content {
-      display: flex;
-      flex-direction: column;
+    .page {
+      display: none;
+      height: 100vh;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      flex-direction: column;
       text-align: center;
     }
 
+    .page.active {
+      display: flex;
+    }
+
     h1 {
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       text-shadow: 0 0 10px #00ff00;
     }
 
-    #launchBtn {
-      padding: 30px 80px;
-      font-size: 2.5rem;
+    button {
+      padding: 20px 60px;
+      font-size: 1.5rem;
       background: black;
       color: #00ff00;
       border: 3px solid #00ff00;
       cursor: pointer;
       box-shadow: 0 0 20px #00ff00;
       transition: 0.3s ease;
+      margin: 10px;
     }
 
-    #launchBtn:hover {
+    button:hover {
       background: #00ff00;
       color: black;
       box-shadow: 0 0 40px #00ff00;
     }
 
     .about {
-      margin-top: 50px;
+      margin-top: 40px;
       max-width: 600px;
       border: 1px solid #00ff00;
       padding: 20px;
       box-shadow: 0 0 10px #00ff00;
     }
 
-    .about h2 {
-      margin-bottom: 10px;
+    input {
+      padding: 15px;
+      font-size: 1.2rem;
+      background: black;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      width: 300px;
+      margin: 10px;
+      text-align: center;
+    }
+
+    .token-box {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #00ff00;
+      min-width: 320px;
+      word-wrap: break-word;
+      box-shadow: 0 0 10px #00ff00;
     }
   </style>
 </head>
@@ -73,17 +94,33 @@
 
 <canvas id="matrix"></canvas>
 
-<div class="content">
+<!-- PAGE 1 -->
+<div id="homePage" class="page active">
   <h1>WELCOME TO THE MATRIX</h1>
-
   <button id="launchBtn">LAUNCH</button>
 
   <div class="about">
     <h2>About Us</h2>
     <p>
-      We are a futuristic team building next-generation technology.
-      Inspired by the Matrix, where code becomes reality.
+      We are a futuristic system where code becomes reality.
+      Press LAUNCH to access the token interface.
     </p>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div id="tokenPage" class="page">
+  <h1>TOKEN INTERFACE</h1>
+
+  <input type="text" id="tokenInput" placeholder="Enter your token">
+
+  <div>
+    <button onclick="generateToken()">GENERATE TOKEN</button>
+    <button onclick="goBack()">BACK</button>
+  </div>
+
+  <div class="token-box" id="generatedToken">
+    Generated token will appear here...
   </div>
 </div>
 
@@ -117,16 +154,35 @@
       if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
         drops[i] = 0;
       }
-
       drops[i]++;
     }
   }
 
   setInterval(drawMatrix, 35);
 
-  document.getElementById("launchBtn").addEventListener("click", () => {
-    alert("🚀 Launch Initiated...");
+  const launchBtn = document.getElementById("launchBtn");
+  const homePage = document.getElementById("homePage");
+  const tokenPage = document.getElementById("tokenPage");
+
+  launchBtn.addEventListener("click", () => {
+    homePage.classList.remove("active");
+    tokenPage.classList.add("active");
   });
+
+  function goBack() {
+    tokenPage.classList.remove("active");
+    homePage.classList.add("active");
+  }
+
+  function generateToken() {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let token = "";
+    for (let i = 0; i < 20; i++) {
+      token += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    document.getElementById("generatedToken").innerText = "Generated Token: " + token;
+  }
 
   window.addEventListener("resize", () => {
     canvas.width = window.innerWidth;
