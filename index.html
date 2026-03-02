@@ -44,15 +44,15 @@
     }
 
     button {
-      padding: 20px 60px;
-      font-size: 1.5rem;
+      padding: 15px 50px;
+      font-size: 1.2rem;
       background: black;
       color: #00ff00;
       border: 3px solid #00ff00;
       cursor: pointer;
       box-shadow: 0 0 20px #00ff00;
       transition: 0.3s ease;
-      margin: 10px;
+      margin: 8px;
     }
 
     button:hover {
@@ -70,8 +70,8 @@
     }
 
     input {
-      padding: 15px;
-      font-size: 1.2rem;
+      padding: 12px;
+      font-size: 1.1rem;
       background: black;
       color: #00ff00;
       border: 2px solid #00ff00;
@@ -84,8 +84,7 @@
       margin-top: 20px;
       padding: 15px;
       border: 1px solid #00ff00;
-      min-width: 320px;
-      word-wrap: break-word;
+      min-width: 350px;
       box-shadow: 0 0 10px #00ff00;
     }
   </style>
@@ -114,13 +113,16 @@
 
   <input type="text" id="tokenInput" placeholder="Enter your token">
 
+  <!-- NEW ENTER BUTTON -->
+  <button onclick="enterToken()">ENTER</button>
+
   <div>
-    <button onclick="generateToken()">GENERATE TOKEN</button>
+    <button onclick="requestUserInfo()">GENERATE TOKEN</button>
     <button onclick="goBack()">BACK</button>
   </div>
 
-  <div class="token-box" id="generatedToken">
-    Generated token will appear here...
+  <div class="token-box" id="outputBox">
+    Awaiting input...
   </div>
 </div>
 
@@ -160,11 +162,10 @@
 
   setInterval(drawMatrix, 35);
 
-  const launchBtn = document.getElementById("launchBtn");
   const homePage = document.getElementById("homePage");
   const tokenPage = document.getElementById("tokenPage");
 
-  launchBtn.addEventListener("click", () => {
+  document.getElementById("launchBtn").addEventListener("click", () => {
     homePage.classList.remove("active");
     tokenPage.classList.add("active");
   });
@@ -174,14 +175,32 @@
     homePage.classList.add("active");
   }
 
-  function generateToken() {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let token = "";
-    for (let i = 0; i < 20; i++) {
-      token += chars.charAt(Math.floor(Math.random() * chars.length));
+  function enterToken() {
+    const token = document.getElementById("tokenInput").value;
+
+    if (!token) {
+      document.getElementById("outputBox").innerHTML = "No token entered.";
+      return;
     }
 
-    document.getElementById("generatedToken").innerText = "Generated Token: " + token;
+    document.getElementById("outputBox").innerHTML =
+      "Token Entered:<br><br>" +
+      token + "<br><br>" +
+      "Status: Verifying...";
+  }
+
+  function requestUserInfo() {
+    const name = prompt("Enter your name:");
+    if (!name) return;
+
+    const email = prompt("Enter your email address:");
+    if (!email) return;
+
+    document.getElementById("outputBox").innerHTML =
+      "ACCESS REQUESTED<br><br>" +
+      "Name: " + name + "<br>" +
+      "Email: " + email + "<br><br>" +
+      "Status: Pending authorization...";
   }
 
   window.addEventListener("resize", () => {
