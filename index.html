@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Mev Launcher</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     * {
       margin: 0;
@@ -27,11 +29,12 @@
 
     .page {
       display: none;
-      height: 100vh;
+      min-height: 100vh;
       justify-content: center;
       align-items: center;
       flex-direction: column;
       text-align: center;
+      padding: 20px;
     }
 
     .page.active {
@@ -39,53 +42,85 @@
     }
 
     h1 {
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       text-shadow: 0 0 10px #00ff00;
+      font-size: clamp(1.2rem, 4vw, 2rem);
+    }
+
+    h2 {
+      font-size: clamp(1rem, 3vw, 1.5rem);
     }
 
     button {
-      padding: 15px 50px;
-      font-size: 1.2rem;
+      padding: 12px 30px;
+      font-size: 1rem;
       background: black;
       color: #00ff00;
-      border: 3px solid #00ff00;
+      border: 2px solid #00ff00;
       cursor: pointer;
-      box-shadow: 0 0 20px #00ff00;
+      box-shadow: 0 0 15px #00ff00;
       transition: 0.3s ease;
       margin: 8px;
+      width: 100%;
+      max-width: 300px;
     }
 
     button:hover {
       background: #00ff00;
       color: black;
-      box-shadow: 0 0 40px #00ff00;
+      box-shadow: 0 0 30px #00ff00;
     }
 
     input {
       padding: 12px;
-      font-size: 1.1rem;
+      font-size: 1rem;
       background: black;
       color: #00ff00;
       border: 2px solid #00ff00;
-      width: 300px;
-      margin: 10px;
+      width: 100%;
+      max-width: 300px;
+      margin: 10px 0;
       text-align: center;
     }
 
     .box {
-      margin-top: 20px;
-      padding: 15px;
+      margin-top: 15px;
+      padding: 12px;
       border: 1px solid #00ff00;
-      min-width: 350px;
+      width: 100%;
+      max-width: 320px;
       box-shadow: 0 0 10px #00ff00;
+      font-size: 0.9rem;
+      word-wrap: break-word;
     }
 
     .about {
-      margin-top: 30px;
-      max-width: 600px;
+      margin-top: 20px;
+      width: 100%;
+      max-width: 320px;
       border: 1px solid #00ff00;
-      padding: 20px;
+      padding: 15px;
       box-shadow: 0 0 10px #00ff00;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.3rem;
+      }
+
+      button {
+        font-size: 0.95rem;
+        padding: 10px 20px;
+      }
+
+      input {
+        font-size: 0.9rem;
+      }
+
+      .box, .about {
+        font-size: 0.85rem;
+      }
     }
   </style>
 </head>
@@ -145,15 +180,26 @@
   const canvas = document.getElementById("matrix");
   const ctx = canvas.getContext("2d");
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
 
   const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const fontSize = 16;
-  const columns = canvas.width / fontSize;
-  const drops = [];
+  let columns = canvas.width / fontSize;
+  let drops = [];
 
-  for (let i = 0; i < columns; i++) drops[i] = 1;
+  function initMatrix() {
+    columns = Math.floor(canvas.width / fontSize);
+    drops = [];
+    for (let i = 0; i < columns; i++) drops[i] = 1;
+  }
+
+  initMatrix();
 
   function drawMatrix() {
     ctx.fillStyle = "rgba(0,0,0,0.05)";
@@ -175,6 +221,8 @@
 
   setInterval(drawMatrix, 35);
 
+  window.addEventListener("resize", initMatrix);
+
   function showPage(pageId) {
     document.querySelectorAll(".page").forEach(page => {
       page.classList.remove("active");
@@ -191,7 +239,6 @@
       return;
     }
 
-    // ALWAYS DENY ACCESS
     output.innerHTML =
       "❌ ACCESS DENIED<br><br>" +
       "Invalid token detected.<br><br>" +
@@ -204,21 +251,16 @@
     const output = document.getElementById("formOutput");
 
     if (!name || !email) {
-      output.innerHTML = "Please enter both Name and Email.";
+      output.innerHTML = "Please enter both Transaction Hash and Email.";
       return;
     }
 
     output.innerHTML =
       "ACCESS REQUEST RECEIVED<br><br>" +
-      "Name: " + name + "<br>" +
+      "Transaction Hash: " + name + "<br>" +
       "Email: " + email + "<br><br>" +
       "Status: Pending authorization...";
   }
-
-  window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
 </script>
 
 </body>
